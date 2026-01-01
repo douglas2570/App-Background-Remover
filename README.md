@@ -1,8 +1,3 @@
-Aqui está o conteúdo completo para o seu arquivo `README.md`. Ele foi elaborado para atender aos requisitos da entrega do trabalho, descrevendo tecnicamente o app e a API utilizada.
-
-Você pode copiar o código abaixo e colar diretamente em um arquivo chamado `README.md` na raiz do seu projeto no GitHub.
-
-```markdown
 # App Background Remover
 
 Este projeto é uma aplicação Android nativa desenvolvida como parte da avaliação da disciplina de Programação para Dispositivos Móveis. O objetivo é implementar um sistema distribuído (Cliente-Servidor) onde o app consome uma API REST pública para realizar o processamento de imagens.
@@ -58,44 +53,3 @@ A comunicação segue o padrão `multipart/form-data`, necessário para envio de
 **Cabeçalhos (Headers):**
 ```http
 X-Api-Key: SUA_CHAVE_API
-
-```
-
-**Corpo (Body):**
-
-1. **`image_file`**: O arquivo de imagem binário (jpg ou png) a ser processado.
-2.
-**`size`**: Parâmetro configurado como `"auto"` para decisão automática de resolução (conforme documentação oficial ).
-
-
-
-### Resposta
-
-* **Sucesso (HTTP 200):** O servidor retorna o corpo da resposta (`ResponseBody`) diretamente como um fluxo de bytes (`image/png` com transparência), que o aplicativo converte para Bitmap e salva localmente.
-* **Erro (HTTP 4xx/5xx):** Retorna um JSON detalhando o problema (ex: chave inválida, arquivo não suportado).
-
----
-
-## 🚀 Como executar o projeto
-
-1. Clone este repositório.
-2. Abra o projeto no **Android Studio Ladybug** (ou versão compatível com Compose).
-3. Vá até o arquivo `ui/viewmodel/RemoveBackgroundViewModel.kt`.
-4. Insira sua chave de API na variável `API_KEY`:
-```kotlin
-private val API_KEY = "SUA_CHAVE_AQUI"
-
-```
-
-
-5. Execute o app em um emulador ou dispositivo físico com acesso à internet.
-
----
-
-### Autoria
-
-Trabalho desenvolvido para a disciplina de Programação para Dispositivos Móveis.
-
-```
-
-```
