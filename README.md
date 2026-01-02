@@ -4,11 +4,11 @@ Este projeto é uma aplicação Android nativa desenvolvida como parte da avalia
 
 ## 📱 Descrição do que foi Programado
 
-**Link**: https://drive.google.com/drive/folders/1-om_zGHKZ8zd_4HXALaYeeGANm1bUdxk?usp=drive_link
+O aplicativo funciona como um cliente móvel que interage com um serviço externo de Inteligência Artificial para remover o fundo de fotos automaticamente. A aplicação foi construída utilizando **Kotlin** e **Jetpack Compose**, seguindo as práticas de *Modern Android Development (MAD)*.
 
 ## ⏯️ Vídeo Demonstração da execução da aplicação
 
-O aplicativo funciona como um cliente móvel que interage com um serviço externo de Inteligência Artificial para remover o fundo de fotos automaticamente. A aplicação foi construída utilizando **Kotlin** e **Jetpack Compose**, seguindo as práticas de *Modern Android Development (MAD)*.
+**Link**: https://drive.google.com/drive/folders/1-om_zGHKZ8zd_4HXALaYeeGANm1bUdxk?usp=drive_link
 
 ### Funcionalidades e Fluxo
 A aplicação atende aos requisitos do trabalho (Consumo de API, Persistência Local e Múltiplas Telas) através do seguinte fluxo:
