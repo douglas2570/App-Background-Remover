@@ -21,13 +21,11 @@ class HomeViewModel(private val imageManager: ImageManager) : ViewModel() {
 
     fun loadImages() {
         viewModelScope.launch {
-            // Recarrega a lista de arquivos da pasta do app
             _savedImages.value = imageManager.getSavedImages()
         }
     }
 }
 
-// Factory para injetar o ImageManager no ViewModel
 class HomeViewModelFactory(private val imageManager: ImageManager) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {

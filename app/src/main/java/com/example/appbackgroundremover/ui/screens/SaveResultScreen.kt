@@ -1,7 +1,6 @@
 package com.example.appbackgroundremover.ui.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -37,12 +36,10 @@ fun SaveResultScreen(
 ) {
     val context = LocalContext.current
 
-    // Inicializa ViewModel com Factory
     val viewModel: SaveResultViewModel = viewModel(
         factory = SaveResultViewModelFactory(context)
     )
 
-    // Decodifica o caminho do arquivo recebido da navegação
     val decodedPath = remember(filePathArg) {
         try {
             URLDecoder.decode(filePathArg ?: "", StandardCharsets.UTF_8.toString())
@@ -51,11 +48,9 @@ fun SaveResultScreen(
         }
     }
 
-    // Estados da UI
     var filename by remember { mutableStateOf("foto_editada") }
     val currentDate = remember { viewModel.getCurrentDate() }
 
-    // Layout Principal
     Scaffold(
         topBar = {
             TopAppBar(
@@ -68,7 +63,7 @@ fun SaveResultScreen(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF1B1B2F))
             )
         },
-        containerColor = Color(0xFF1B1B2F) // Fundo escuro (Tema do App)
+        containerColor = Color(0xFF1B1B2F)
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -78,15 +73,13 @@ fun SaveResultScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            // 1. Imagem Recortada em Destaque
             Box(
                 modifier = Modifier
-                    .weight(1f) // Ocupa o espaço disponível superior
+                    .weight(1f)
                     .fillMaxWidth()
                     .padding(vertical = 16.dp),
                 contentAlignment = Alignment.Center
             ) {
-                // Exibe a imagem do arquivo temporário
                 Image(
                     painter = rememberAsyncImagePainter(model = File(decodedPath)),
                     contentDescription = "Imagem sem fundo",
@@ -97,12 +90,10 @@ fun SaveResultScreen(
                 )
             }
 
-            // 2. Campos de Metadados (Conforme TELA 3)
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Campo: Nome da Foto
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -130,7 +121,6 @@ fun SaveResultScreen(
                     )
                 }
 
-                // Campo: Data de Criação
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -153,7 +143,6 @@ fun SaveResultScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // 3. Botão Salvar Foto
             Button(
                 onClick = {
                     if (filename.isNotBlank()) {
@@ -163,7 +152,6 @@ fun SaveResultScreen(
                             userFileName = filename,
                             creationDate = currentDate,
                             onSuccess = {
-                                // Navega de volta para Home limpando a pilha
                                 navController.navigate(Screen.Home.route) {
                                     popUpTo(Screen.Home.route) { inclusive = true }
                                 }
@@ -175,7 +163,7 @@ fun SaveResultScreen(
                     .fillMaxWidth()
                     .height(56.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF304FFE) // Azul vibrante
+                    containerColor = Color(0xFF304FFE)
                 ),
                 shape = RoundedCornerShape(8.dp)
             ) {

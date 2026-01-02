@@ -1,14 +1,10 @@
 package com.example.appbackgroundremover.ui.screens
 
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,12 +20,9 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -38,7 +31,6 @@ import coil.compose.AsyncImage
 import com.example.appbackgroundremover.ui.navigation.Screen
 import com.example.appbackgroundremover.ui.viewmodel.RemoveBackgroundViewModel
 import com.example.appbackgroundremover.ui.viewmodel.RemoveBgUiState
-import java.io.File
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -51,7 +43,6 @@ fun RemoveBackgroundScreen(
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
-    // Launcher para selecionar foto da galeria (Photo Picker)
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
@@ -61,16 +52,14 @@ fun RemoveBackgroundScreen(
         }
     )
 
-    // Observa o estado para navegação ou erro
     LaunchedEffect(uiState) {
         when (uiState) {
             is RemoveBgUiState.Success -> {
                 val filePath = (uiState as RemoveBgUiState.Success).resultParams
-                // Codifica o path para passar na URL de navegação de forma segura
                 val encodedPath = URLEncoder.encode(filePath, StandardCharsets.UTF_8.toString())
 
                 navController.navigate(Screen.SaveResult.createRoute(encodedPath))
-                viewModel.resetState() // Reseta para não navegar de novo ao voltar
+                viewModel.resetState()
             }
             is RemoveBgUiState.Error -> {
                 Toast.makeText(context, (uiState as RemoveBgUiState.Error).message, Toast.LENGTH_LONG).show()
@@ -82,16 +71,16 @@ fun RemoveBackgroundScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Voltar", color = Color.White) }, // Mockup TELA 2
+                title = { Text("Voltar", color = Color.White) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Voltar", tint = Color.White)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF1B1B2F)) // Azul escuro do tema
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF1B1B2F))
             )
         },
-        containerColor = Color(0xFF1B1B2F) // Fundo geral escuro
+        containerColor = Color(0xFF1B1B2F)
     ) { paddingValues ->
 
         Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
@@ -104,13 +93,12 @@ fun RemoveBackgroundScreen(
                 verticalArrangement = Arrangement.Center
             ) {
 
-                // Área de Seleção de Imagem (Placeholder pontilhado)
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(400.dp)
                         .clip(RoundedCornerShape(16.dp))
-                        .dashedBorder(2.dp, Color.White, 16.dp) // Função auxiliar abaixo
+                        .dashedBorder(2.dp, Color.White, 16.dp)
                         .clickable {
                             photoPickerLauncher.launch(
                                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
@@ -121,7 +109,6 @@ fun RemoveBackgroundScreen(
                     val currentUri = (uiState as? RemoveBgUiState.ImageSelected)?.imageUri
 
                     if (currentUri != null) {
-                        // Mostra a imagem selecionada
                         AsyncImage(
                             model = currentUri,
                             contentDescription = "Imagem selecionada",
@@ -129,10 +116,9 @@ fun RemoveBackgroundScreen(
                             contentScale = ContentScale.Fit
                         )
                     } else {
-                        // Placeholder (Ícone + Texto)
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(
-                                imageVector = Icons.Default.Add, // Pode substituir por painterResource se tiver o ícone de galeria
+                                imageVector = Icons.Default.Add,
                                 contentDescription = "Selecionar",
                                 tint = Color.Gray,
                                 modifier = Modifier.size(64.dp)
@@ -149,7 +135,6 @@ fun RemoveBackgroundScreen(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // Botão Remover Background
                 Button(
                     onClick = {
                         val uri = (uiState as? RemoveBgUiState.ImageSelected)?.imageUri
@@ -160,10 +145,10 @@ fun RemoveBackgroundScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
-                    enabled = uiState is RemoveBgUiState.ImageSelected, // Só habilita se tiver foto
+                    enabled = uiState is RemoveBgUiState.ImageSelected,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF304FFE), // Azul do botão (TELA 2)
-                        disabledContainerColor = Color.Gray // Cinza quando desativado
+                        containerColor = Color(0xFF304FFE),
+                        disabledContainerColor = Color.Gray
                     ),
                     shape = RoundedCornerShape(8.dp)
                 ) {
@@ -171,13 +156,12 @@ fun RemoveBackgroundScreen(
                 }
             }
 
-            // Overlay de Carregamento (TELA CARREGANDO)
             if (uiState is RemoveBgUiState.Loading) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color(0xFF1B1B2F).copy(alpha = 0.9f)) // Fundo escuro semi-transparente
-                        .clickable(enabled = false) {}, // Bloqueia cliques
+                        .background(Color(0xFF1B1B2F).copy(alpha = 0.9f))
+                        .clickable(enabled = false) {},
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator(color = Color.White)
@@ -187,7 +171,6 @@ fun RemoveBackgroundScreen(
     }
 }
 
-// Extensão Helper para borda pontilhada
 fun Modifier.dashedBorder(width: androidx.compose.ui.unit.Dp, color: Color, cornerRadius: androidx.compose.ui.unit.Dp) = drawBehind {
     drawRoundRect(
         color = color,

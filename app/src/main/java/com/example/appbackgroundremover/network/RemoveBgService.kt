@@ -15,14 +15,10 @@ interface RemoveBgService {
     @Multipart
     @POST("removebg")
     suspend fun removeBackground(
-        // Header de autenticação obrigatório
         @Header("X-Api-Key") apiKey: String,
 
-        // Arquivo de imagem (binário)
         @Part imageFile: MultipartBody.Part,
 
-        // Parâmetro de tamanho (size="auto")
         @Part("size") size: RequestBody
     ): Response<ResponseBody>
-    // Retornamos Response<ResponseBody> para ter acesso ao status code e ao corpo binário da imagem
 }

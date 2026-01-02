@@ -31,7 +31,6 @@ class SaveResultViewModel(
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                // 1. Carrega o Bitmap do arquivo temporário (cache)
                 val tempFile = File(tempFilePath)
                 if (!tempFile.exists()) {
                     withContext(Dispatchers.Main) {
@@ -43,13 +42,9 @@ class SaveResultViewModel(
                 val bitmap = BitmapFactory.decodeFile(tempFile.absolutePath)
 
                 if (bitmap != null) {
-                    // 2. Salva o Bitmap na pasta definitiva do App (ImageManager)
-                    // O ImageManager já adiciona a extensão .png se necessário
                     val savedUri = imageManager.saveImageToAppStorage(bitmap, userFileName)
 
                     if (savedUri != null) {
-                        // 3. Salva os Metadados (MetadataManager)
-                        // Garante que o nome salvo no metadado seja igual ao do arquivo (com .png)
                         val finalName = if (userFileName.endsWith(".png", true)) userFileName else "$userFileName.png"
 
                         val metadata = ImageMetadata(
@@ -58,7 +53,6 @@ class SaveResultViewModel(
                         )
                         metadataManager.saveMetadata(metadata)
 
-                        // 4. Feedback e Navegação
                         withContext(Dispatchers.Main) {
                             Toast.makeText(context, "Foto salva com sucesso!", Toast.LENGTH_SHORT).show()
                             onSuccess()
@@ -78,14 +72,12 @@ class SaveResultViewModel(
         }
     }
 
-    // Gera a data atual formatada (Ex: 30/12/2025)
     fun getCurrentDate(): String {
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         return sdf.format(Date())
     }
 }
 
-// Factory para injetar dependências
 class SaveResultViewModelFactory(
     private val context: Context
 ) : ViewModelProvider.Factory {

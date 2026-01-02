@@ -16,7 +16,6 @@ object RetrofitClient {
 
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
-        // Aumentando o timeout pois upload de imagens pode demorar
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
@@ -26,7 +25,7 @@ object RetrofitClient {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create()) // Necessário caso a API retorne JSON de erro
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(RemoveBgService::class.java)
     }

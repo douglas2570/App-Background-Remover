@@ -19,13 +19,12 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.io.FileOutputStream
 
-// Definição dos Estados da UI
 sealed class RemoveBgUiState {
-    object Idle : RemoveBgUiState() // Estado inicial
-    data class ImageSelected(val imageUri: Uri) : RemoveBgUiState() // Foto escolhida
-    object Loading : RemoveBgUiState() // Enviando...
-    data class Success(val resultParams: String) : RemoveBgUiState() // Sucesso (caminho do arquivo)
-    data class Error(val message: String) : RemoveBgUiState() // Erro
+    object Idle : RemoveBgUiState()
+    data class ImageSelected(val imageUri: Uri) : RemoveBgUiState()
+    object Loading : RemoveBgUiState()
+    data class Success(val resultParams: String) : RemoveBgUiState()
+    data class Error(val message: String) : RemoveBgUiState()
 }
 
 class RemoveBackgroundViewModel : ViewModel() {
@@ -44,10 +43,8 @@ class RemoveBackgroundViewModel : ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                // 1. Preparar o arquivo para envio (Multipart)
                 val contentResolver = context.contentResolver
 
-                // Cria uma cópia temporária do arquivo selecionado para poder enviar
                 val tempFile = File(context.cacheDir, "upload_temp.jpg")
                 val inputStream = contentResolver.openInputStream(imageUri)
                 val outputStream = FileOutputStream(tempFile)
@@ -60,33 +57,27 @@ class RemoveBackgroundViewModel : ViewModel() {
 
                 val sizeParam = "auto".toRequestBody("text/plain".toMediaTypeOrNull())
 
-                // 2. Chamada de Rede
                 val response = RetrofitClient.instance.removeBackground(API_KEY, body, sizeParam)
 
                 if (response.isSuccessful && response.body() != null) {
-                    // 3. Converter a resposta binária em Bitmap
                     val bytes = response.body()!!.bytes()
                     val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
 
                     if (bitmap != null) {
-                        // 4. Salvar Bitmap resultante em cache para passar para a próxima tela
                         val resultFile = File(context.cacheDir, "result_temp.png")
                         val resultStream = FileOutputStream(resultFile)
                         bitmap.compress(Bitmap.CompressFormat.PNG, 100, resultStream)
                         resultStream.close()
 
-                        // Atualiza estado para sucesso com o caminho do arquivo
                         _uiState.value = RemoveBgUiState.Success(resultFile.absolutePath)
                     } else {
                         _uiState.value = RemoveBgUiState.Error("Erro ao processar imagem retornada.")
                     }
                 } else {
-                    // Tenta ler a mensagem de erro da API (JSON)
                     val errorBody = response.errorBody()?.string() ?: "Erro desconhecido na API"
                     _uiState.value = RemoveBgUiState.Error("Falha na API: $errorBody")
                 }
 
-                // Limpa o arquivo de upload temporário
                 tempFile.delete()
 
             } catch (e: Exception) {
@@ -96,7 +87,6 @@ class RemoveBackgroundViewModel : ViewModel() {
         }
     }
 
-    // Reseta o estado ao sair da tela ou voltar
     fun resetState() {
         _uiState.value = RemoveBgUiState.Idle
     }

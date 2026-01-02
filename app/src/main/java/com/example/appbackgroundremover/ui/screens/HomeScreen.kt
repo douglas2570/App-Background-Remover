@@ -1,7 +1,5 @@
 package com.example.appbackgroundremover.ui.screens
 
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -18,11 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.core.content.FileProvider
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -40,7 +35,6 @@ fun HomeScreen(
     val savedImages by viewModel.savedImages.collectAsState()
     val context = LocalContext.current
 
-    // Recarrega as imagens sempre que a tela entra em foco (útil ao voltar da tela de salvar)
     LaunchedEffect(Unit) {
         viewModel.loadImages()
     }
@@ -90,7 +84,7 @@ fun HomeScreen(
                 }
             } else {
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(3), // 3 colunas conforme o mockup TELA 1
+                    columns = GridCells.Fixed(3),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -110,14 +104,13 @@ fun ImageCard(file: File, onImageClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(0.8f) // Formato retangular vertical
+            .aspectRatio(0.8f)
             .clickable { onImageClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Exibe a miniatura da imagem
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(file)
@@ -129,7 +122,6 @@ fun ImageCard(file: File, onImageClick: () -> Unit) {
                     .weight(1f)
                     .fillMaxWidth()
             )
-            // Nome do arquivo
             Text(
                 text = file.name,
                 style = MaterialTheme.typography.bodySmall,
@@ -140,27 +132,21 @@ fun ImageCard(file: File, onImageClick: () -> Unit) {
     }
 }
 
-// Função auxiliar para abrir a Intent da Galeria
-// Função auxiliar para abrir a Intent com seletor de aplicativos
 fun openImageInGallery(context: android.content.Context, file: File) {
     try {
-        // Gera uma URI segura (content://) ao invés de file://
         val uri = androidx.core.content.FileProvider.getUriForFile(
             context,
-            "${context.packageName}.provider", // Deve bater com o authority do Manifest
+            "${context.packageName}.provider",
             file
         )
 
-        // Cria a intenção de visualização
         val intent = android.content.Intent(android.content.Intent.ACTION_VIEW).apply {
-            setDataAndType(uri, "image/png") // Define que é uma imagem PNG
-            addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION) // Dá permissão de leitura temporária
+            setDataAndType(uri, "image/png")
+            addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
 
-        // Cria o "Chooser" (a janela que pergunta "Abrir com...")
         val chooser = android.content.Intent.createChooser(intent, "Abrir imagem com...")
 
-        // Inicia a activity
         context.startActivity(chooser)
 
     } catch (e: Exception) {
