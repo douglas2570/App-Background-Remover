@@ -2,13 +2,13 @@
 
 Este projeto é uma aplicação Android nativa desenvolvida como parte da avaliação da disciplina de Programação para Dispositivos Móveis. O objetivo é implementar um sistema distribuído (Cliente-Servidor) onde o app consome uma API REST pública para realizar o processamento de imagens.
 
-## 📱 Descrição do que foi Programado
-
-O aplicativo funciona como um cliente móvel que interage com um serviço externo de Inteligência Artificial para remover o fundo de fotos automaticamente. A aplicação foi construída utilizando **Kotlin** e **Jetpack Compose**, seguindo as práticas de *Modern Android Development (MAD)*.
-
 ## ⏯️ Vídeo Demonstração da execução da aplicação
 
 **Link**: https://drive.google.com/drive/folders/1-om_zGHKZ8zd_4HXALaYeeGANm1bUdxk?usp=drive_link
+
+## 📱 Descrição do que foi Programado
+
+O aplicativo funciona como um cliente móvel que interage com um serviço externo de Inteligência Artificial para remover o fundo de fotos automaticamente. A aplicação foi construída utilizando **Kotlin** e **Jetpack Compose**, seguindo as práticas de *Modern Android Development (MAD)*.
 
 ### Funcionalidades e Fluxo
 A aplicação atende aos requisitos do trabalho (Consumo de API, Persistência Local e Múltiplas Telas) através do seguinte fluxo:
